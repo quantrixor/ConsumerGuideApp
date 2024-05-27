@@ -191,6 +191,8 @@ namespace ConsumerGuideApp.View.Pages
                 _context.SaveChanges();
 
                 MessageBox.Show("Информация сохранена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                NavigationService.GoBack();
+
             }
         }
 
@@ -248,6 +250,29 @@ namespace ConsumerGuideApp.View.Pages
             if (textBox.Text.Length >= 18)
             {
                 e.Handled = true;
+            }
+        }
+
+        private void EditServices_Click(object sender, RoutedEventArgs e)
+        {
+            // Загружаем все услуги
+            var allServices = _context.Services.ToList();
+            lbServices.ItemsSource = allServices;
+
+            // Отмечаем услуги, связанные с текущей компанией
+            var selectedServices = _context.Companies
+                                           .Where(c => c.CompanyID == _company.CompanyID)
+                                           .SelectMany(c => c.Services)
+                                           .Select(s => s.ServiceID)
+                                           .ToList();
+
+            foreach (var service in lbServices.Items)
+            {
+                var listBoxItem = lbServices.ItemContainerGenerator.ContainerFromItem(service) as ListBoxItem;
+                if (listBoxItem != null)
+                {
+                    listBoxItem.IsSelected = selectedServices.Contains(((Services)service).ServiceID);
+                }
             }
         }
     }

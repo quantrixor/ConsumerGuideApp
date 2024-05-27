@@ -92,7 +92,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__CompanySe__Compa__440B1D61">
-          <End Role="Companies" Type="Self.Companies" Multiplicity="1" />
+          <End Role="Companies" Type="Self.Companies" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CompanyServices" Type="Self.CompanyServices" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Companies">
@@ -104,7 +106,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__CompanySe__Servi__44FF419A">
-          <End Role="Services" Type="Self.Services" Multiplicity="1" />
+          <End Role="Services" Type="Self.Services" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="CompanyServices" Type="Self.CompanyServices" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Services">
