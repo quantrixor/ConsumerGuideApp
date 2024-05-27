@@ -5,15 +5,16 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="042019ef24264f68a117262fd6b6120c" Name="Diagram1">
-        <EntityTypeShape EntityType="ConsumerGuideDBModel.Companies" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConsumerGuideDBModel.OwnershipTypes" Width="1.5" PointX="0.75" PointY="1.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConsumerGuideDBModel.ServiceCategories" Width="1.5" PointX="3" PointY="5.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConsumerGuideDBModel.Services" Width="1.5" PointX="5.25" PointY="1.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConsumerGuideDBModel.Specializations" Width="1.5" PointX="0.75" PointY="5.875" IsExpanded="true" />
-        <AssociationConnector Association="ConsumerGuideDBModel.FK__Companies__Owner__412EB0B6" ManuallyRouted="false" />
-        <AssociationConnector Association="ConsumerGuideDBModel.FK__Companies__Speci__403A8C7D" ManuallyRouted="false" />
-        <AssociationConnector Association="ConsumerGuideDBModel.FK__Services__Servic__3D5E1FD2" ManuallyRouted="false" />
-        <AssociationConnector Association="ConsumerGuideDBModel.CompanyServices" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ConsumerGuideDBModel.Companies" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="ConsumerGuideDBModel.OwnershipTypes" Width="1.5" PointX="0.75" PointY="1.875" />
+        <EntityTypeShape EntityType="ConsumerGuideDBModel.ServiceCategories" Width="1.5" PointX="3" PointY="5.875" />
+        <EntityTypeShape EntityType="ConsumerGuideDBModel.Services" Width="1.5" PointX="5.25" PointY="1.625" />
+        <EntityTypeShape EntityType="ConsumerGuideDBModel.Specializations" Width="1.5" PointX="0.75" PointY="5.875" />
+        <EntityTypeShape EntityType="ConsumerGuideDBModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="4.75" />
+        <AssociationConnector Association="ConsumerGuideDBModel.FK__Companies__Owner__412EB0B6" />
+        <AssociationConnector Association="ConsumerGuideDBModel.FK__Companies__Speci__403A8C7D" />
+        <AssociationConnector Association="ConsumerGuideDBModel.FK__Services__Servic__3D5E1FD2" />
+        <AssociationConnector Association="ConsumerGuideDBModel.CompanyServices" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

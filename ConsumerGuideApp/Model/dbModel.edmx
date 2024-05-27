@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище ConsumerGuideDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Хранилище ConsumerGuideDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Companies">
           <Key>
             <PropertyRef Name="CompanyID" />
@@ -56,6 +56,16 @@
           </Key>
           <Property Name="SpecializationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <Association Name="FK__Companies__Owner__412EB0B6">
           <End Role="OwnershipTypes" Type="Self.OwnershipTypes" Multiplicity="0..1" />
@@ -124,6 +134,7 @@
           <EntitySet Name="ServiceCategories" EntityType="Self.ServiceCategories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Services" EntityType="Self.Services" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Specializations" EntityType="Self.Specializations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Companies__Owner__412EB0B6" Association="Self.FK__Companies__Owner__412EB0B6">
             <End Role="OwnershipTypes" EntitySet="OwnershipTypes" />
             <End Role="Companies" EntitySet="Companies" />
@@ -145,17 +156,40 @@
             <End Role="Services" EntitySet="Services" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ConsumerGuideDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ConsumerGuideDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Companies" EntityType="ConsumerGuideDBModel.Companies" />
+          <EntitySet Name="OwnershipTypes" EntityType="ConsumerGuideDBModel.OwnershipTypes" />
+          <EntitySet Name="ServiceCategories" EntityType="ConsumerGuideDBModel.ServiceCategories" />
+          <EntitySet Name="Services" EntityType="ConsumerGuideDBModel.Services" />
+          <EntitySet Name="Specializations" EntityType="ConsumerGuideDBModel.Specializations" />
+          <EntitySet Name="sysdiagrams" EntityType="ConsumerGuideDBModel.sysdiagrams" />
+          <AssociationSet Name="FK__Companies__Owner__412EB0B6" Association="ConsumerGuideDBModel.FK__Companies__Owner__412EB0B6">
+            <End Role="OwnershipTypes" EntitySet="OwnershipTypes" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Companies__Speci__403A8C7D" Association="ConsumerGuideDBModel.FK__Companies__Speci__403A8C7D">
+            <End Role="Specializations" EntitySet="Specializations" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Services__Servic__3D5E1FD2" Association="ConsumerGuideDBModel.FK__Services__Servic__3D5E1FD2">
+            <End Role="ServiceCategories" EntitySet="ServiceCategories" />
+            <End Role="Services" EntitySet="Services" />
+          </AssociationSet>
+          <AssociationSet Name="CompanyServices" Association="ConsumerGuideDBModel.CompanyServices">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Services" EntitySet="Services" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Companies">
           <Key>
             <PropertyRef Name="CompanyID" />
           </Key>
           <Property Name="CompanyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Grade" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -163,48 +197,58 @@
           <Property Name="OwnershipTypeID" Type="Int32" />
           <Property Name="WorkingHours" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="WorkingDays" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="OwnershipTypes" Relationship="Self.FK__Companies__Owner__412EB0B6" FromRole="Companies" ToRole="OwnershipTypes" />
-          <NavigationProperty Name="Specializations" Relationship="Self.FK__Companies__Speci__403A8C7D" FromRole="Companies" ToRole="Specializations" />
-          <NavigationProperty Name="Services" Relationship="Self.CompanyServices" FromRole="Companies" ToRole="Services" />
+          <NavigationProperty Name="OwnershipTypes" Relationship="ConsumerGuideDBModel.FK__Companies__Owner__412EB0B6" FromRole="Companies" ToRole="OwnershipTypes" />
+          <NavigationProperty Name="Specializations" Relationship="ConsumerGuideDBModel.FK__Companies__Speci__403A8C7D" FromRole="Companies" ToRole="Specializations" />
+          <NavigationProperty Name="Services" Relationship="ConsumerGuideDBModel.CompanyServices" FromRole="Companies" ToRole="Services" />
         </EntityType>
         <EntityType Name="OwnershipTypes">
           <Key>
             <PropertyRef Name="OwnershipTypeID" />
           </Key>
           <Property Name="OwnershipTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Companies" Relationship="Self.FK__Companies__Owner__412EB0B6" FromRole="OwnershipTypes" ToRole="Companies" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Companies" Relationship="ConsumerGuideDBModel.FK__Companies__Owner__412EB0B6" FromRole="OwnershipTypes" ToRole="Companies" />
         </EntityType>
         <EntityType Name="ServiceCategories">
           <Key>
             <PropertyRef Name="ServiceCategoryID" />
           </Key>
           <Property Name="ServiceCategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Services" Relationship="Self.FK__Services__Servic__3D5E1FD2" FromRole="ServiceCategories" ToRole="Services" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Services" Relationship="ConsumerGuideDBModel.FK__Services__Servic__3D5E1FD2" FromRole="ServiceCategories" ToRole="Services" />
         </EntityType>
         <EntityType Name="Services">
           <Key>
             <PropertyRef Name="ServiceID" />
           </Key>
           <Property Name="ServiceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ServiceCategoryID" Type="Int32" />
-          <NavigationProperty Name="ServiceCategories" Relationship="Self.FK__Services__Servic__3D5E1FD2" FromRole="Services" ToRole="ServiceCategories" />
-          <NavigationProperty Name="Companies" Relationship="Self.CompanyServices" FromRole="Services" ToRole="Companies" />
+          <NavigationProperty Name="ServiceCategories" Relationship="ConsumerGuideDBModel.FK__Services__Servic__3D5E1FD2" FromRole="Services" ToRole="ServiceCategories" />
+          <NavigationProperty Name="Companies" Relationship="ConsumerGuideDBModel.CompanyServices" FromRole="Services" ToRole="Companies" />
         </EntityType>
         <EntityType Name="Specializations">
           <Key>
             <PropertyRef Name="SpecializationID" />
           </Key>
           <Property Name="SpecializationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Companies" Relationship="Self.FK__Companies__Speci__403A8C7D" FromRole="Specializations" ToRole="Companies" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Companies" Relationship="ConsumerGuideDBModel.FK__Companies__Speci__403A8C7D" FromRole="Specializations" ToRole="Companies" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <Association Name="FK__Companies__Owner__412EB0B6">
-          <End Role="OwnershipTypes" Type="Self.OwnershipTypes" Multiplicity="0..1" />
-          <End Role="Companies" Type="Self.Companies" Multiplicity="*" />
+          <End Type="ConsumerGuideDBModel.OwnershipTypes" Role="OwnershipTypes" Multiplicity="0..1" />
+          <End Type="ConsumerGuideDBModel.Companies" Role="Companies" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OwnershipTypes">
               <PropertyRef Name="OwnershipTypeID" />
@@ -215,8 +259,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__Companies__Speci__403A8C7D">
-          <End Role="Specializations" Type="Self.Specializations" Multiplicity="0..1" />
-          <End Role="Companies" Type="Self.Companies" Multiplicity="*" />
+          <End Type="ConsumerGuideDBModel.Specializations" Role="Specializations" Multiplicity="0..1" />
+          <End Type="ConsumerGuideDBModel.Companies" Role="Companies" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Specializations">
               <PropertyRef Name="SpecializationID" />
@@ -227,8 +271,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK__Services__Servic__3D5E1FD2">
-          <End Role="ServiceCategories" Type="Self.ServiceCategories" Multiplicity="0..1" />
-          <End Role="Services" Type="Self.Services" Multiplicity="*" />
+          <End Type="ConsumerGuideDBModel.ServiceCategories" Role="ServiceCategories" Multiplicity="0..1" />
+          <End Type="ConsumerGuideDBModel.Services" Role="Services" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ServiceCategories">
               <PropertyRef Name="ServiceCategoryID" />
@@ -239,32 +283,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="CompanyServices">
-          <End Role="Companies" Type="Self.Companies" Multiplicity="*" />
-          <End Role="Services" Type="Self.Services" Multiplicity="*" />
+          <End Type="ConsumerGuideDBModel.Companies" Role="Companies" Multiplicity="*" />
+          <End Type="ConsumerGuideDBModel.Services" Role="Services" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="ConsumerGuideDBEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Companies" EntityType="Self.Companies" />
-          <EntitySet Name="OwnershipTypes" EntityType="Self.OwnershipTypes" />
-          <EntitySet Name="ServiceCategories" EntityType="Self.ServiceCategories" />
-          <EntitySet Name="Services" EntityType="Self.Services" />
-          <EntitySet Name="Specializations" EntityType="Self.Specializations" />
-          <AssociationSet Name="FK__Companies__Owner__412EB0B6" Association="Self.FK__Companies__Owner__412EB0B6">
-            <End Role="OwnershipTypes" EntitySet="OwnershipTypes" />
-            <End Role="Companies" EntitySet="Companies" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Companies__Speci__403A8C7D" Association="Self.FK__Companies__Speci__403A8C7D">
-            <End Role="Specializations" EntitySet="Specializations" />
-            <End Role="Companies" EntitySet="Companies" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Services__Servic__3D5E1FD2" Association="Self.FK__Services__Servic__3D5E1FD2">
-            <End Role="ServiceCategories" EntitySet="ServiceCategories" />
-            <End Role="Services" EntitySet="Services" />
-          </AssociationSet>
-          <AssociationSet Name="CompanyServices" Association="Self.CompanyServices">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="Services" EntitySet="Services" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -274,58 +295,69 @@
           <EntitySetMapping Name="Companies">
             <EntityTypeMapping TypeName="ConsumerGuideDBModel.Companies">
               <MappingFragment StoreEntitySet="Companies">
-                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Grade" ColumnName="Grade" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="SpecializationID" ColumnName="SpecializationID" />
-                <ScalarProperty Name="OwnershipTypeID" ColumnName="OwnershipTypeID" />
-                <ScalarProperty Name="WorkingHours" ColumnName="WorkingHours" />
                 <ScalarProperty Name="WorkingDays" ColumnName="WorkingDays" />
+                <ScalarProperty Name="WorkingHours" ColumnName="WorkingHours" />
+                <ScalarProperty Name="OwnershipTypeID" ColumnName="OwnershipTypeID" />
+                <ScalarProperty Name="SpecializationID" ColumnName="SpecializationID" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Grade" ColumnName="Grade" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="OwnershipTypes">
             <EntityTypeMapping TypeName="ConsumerGuideDBModel.OwnershipTypes">
               <MappingFragment StoreEntitySet="OwnershipTypes">
-                <ScalarProperty Name="OwnershipTypeID" ColumnName="OwnershipTypeID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OwnershipTypeID" ColumnName="OwnershipTypeID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ServiceCategories">
             <EntityTypeMapping TypeName="ConsumerGuideDBModel.ServiceCategories">
               <MappingFragment StoreEntitySet="ServiceCategories">
-                <ScalarProperty Name="ServiceCategoryID" ColumnName="ServiceCategoryID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ServiceCategoryID" ColumnName="ServiceCategoryID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Services">
             <EntityTypeMapping TypeName="ConsumerGuideDBModel.Services">
               <MappingFragment StoreEntitySet="Services">
-                <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ServiceCategoryID" ColumnName="ServiceCategoryID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Specializations">
             <EntityTypeMapping TypeName="ConsumerGuideDBModel.Specializations">
               <MappingFragment StoreEntitySet="Specializations">
-                <ScalarProperty Name="SpecializationID" ColumnName="SpecializationID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="SpecializationID" ColumnName="SpecializationID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ConsumerGuideDBModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <AssociationSetMapping Name="CompanyServices" TypeName="ConsumerGuideDBModel.CompanyServices" StoreEntitySet="CompanyServices">
-            <EndProperty Name="Companies">
-              <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
-            </EndProperty>
             <EndProperty Name="Services">
               <ScalarProperty Name="ServiceID" ColumnName="ServiceID" />
+            </EndProperty>
+            <EndProperty Name="Companies">
+              <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
             </EndProperty>
           </AssociationSetMapping>
         </EntityContainerMapping>

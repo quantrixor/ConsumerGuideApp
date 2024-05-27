@@ -19,38 +19,17 @@ namespace ConsumerGuideApp.Model
             : base("name=ConsumerGuideDBEntities")
         {
         }
+    
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            throw new UnintentionalCodeFirstException();
+        }
+    
         public virtual DbSet<Companies> Companies { get; set; }
         public virtual DbSet<OwnershipTypes> OwnershipTypes { get; set; }
         public virtual DbSet<ServiceCategories> ServiceCategories { get; set; }
         public virtual DbSet<Services> Services { get; set; }
         public virtual DbSet<Specializations> Specializations { get; set; }
-
-        public DbSet<CompanyService> CompanyServices { get; set; }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Companies>()
-                .HasRequired(c => c.OwnershipTypes)
-                .WithMany()
-                .HasForeignKey(c => c.OwnershipTypeID);
-
-            modelBuilder.Entity<Companies>()
-                .HasRequired(c => c.Specializations)
-                .WithMany()
-                .HasForeignKey(c => c.SpecializationID);
-
-            modelBuilder.Entity<CompanyService>()
-                .HasKey(cs => new { cs.CompanyID, cs.ServiceID });
-
-            modelBuilder.Entity<CompanyService>()
-                .HasRequired(cs => cs.Company)
-                .WithMany(c => c.CompanyServices)
-                .HasForeignKey(cs => cs.CompanyID);
-
-            modelBuilder.Entity<CompanyService>()
-                .HasRequired(cs => cs.Service)
-                .WithMany(s => s.CompanyServices)
-                .HasForeignKey(cs => cs.ServiceID);
-        }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
     }
 }

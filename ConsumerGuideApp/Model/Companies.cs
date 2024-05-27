@@ -34,6 +34,5 @@ namespace ConsumerGuideApp.Model
         public virtual Specializations Specializations { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Services> Services { get; set; }
-        public virtual ICollection<CompanyService> CompanyServices { get; set; } = new List<CompanyService>();
     }
 }

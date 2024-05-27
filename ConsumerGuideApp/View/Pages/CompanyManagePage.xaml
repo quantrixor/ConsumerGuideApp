@@ -21,7 +21,7 @@
                 <TextBox x:Name="txtAddress" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Телефон:" Margin="0,0,0,5"/>
-                <TextBox x:Name="txtPhone" Margin="0,0,0,10"/>
+                <TextBox x:Name="txtPhone" Margin="0,0,0,10" PreviewTextInput="txtPhone_PreviewTextInput"/>
 
                 <TextBlock Text="Форма собственности:" Margin="0,0,0,5"/>
                 <ComboBox x:Name="cbOwnershipType" Margin="0,0,0,10"/>

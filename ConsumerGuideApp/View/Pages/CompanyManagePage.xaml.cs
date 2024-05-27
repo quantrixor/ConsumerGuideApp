@@ -20,7 +20,7 @@ namespace ConsumerGuideApp.View.Pages
 
             LoadOwnershipTypes();
             LoadSpecializations();
-
+            LoadServices();
 
             if (company != null)
             {
@@ -32,8 +32,21 @@ namespace ConsumerGuideApp.View.Pages
                 cbSpecialization.SelectedValue = company.SpecializationID;
                 SetWorkingHours(company.WorkingHours);
                 SetWorkingDays(company.WorkingDays);
+                LoadCompanyServices(company.CompanyID); // Загрузка услуг компании
             }
         }
+        private void LoadCompanyServices(int companyId)
+        {
+            var companyServices = _context.Companies
+                                          .Where(c => c.CompanyID == companyId)
+                                          .SelectMany(c => c.Services)
+                                          .ToList();
+
+            lbServices.ItemsSource = companyServices;
+            lbServices.DisplayMemberPath = "Name";
+            lbServices.SelectedValuePath = "ServiceID";
+        }
+
 
         private void LoadOwnershipTypes()
         {
@@ -50,6 +63,32 @@ namespace ConsumerGuideApp.View.Pages
             cbSpecialization.DisplayMemberPath = "Name";
             cbSpecialization.SelectedValuePath = "SpecializationID";
         }
+        private void LoadServices()
+        {
+            var services = _context.Services.ToList();
+            lbServices.ItemsSource = services;
+            lbServices.DisplayMemberPath = "Name";
+            lbServices.SelectedValuePath = "ServiceID";
+        }
+
+        private void SetSelectedServices(int companyId)
+        {
+            var selectedServices = _context.Companies
+                                           .Where(c => c.CompanyID == companyId)
+                                           .SelectMany(c => c.Services)
+                                           .Select(s => s.ServiceID)
+                                           .ToList();
+
+            foreach (var service in lbServices.Items)
+            {
+                var listBoxItem = lbServices.ItemContainerGenerator.ContainerFromItem(service) as ListBoxItem;
+                if (listBoxItem != null)
+                {
+                    listBoxItem.IsSelected = selectedServices.Contains(((Services)service).ServiceID);
+                }
+            }
+        }
+
 
         private void SetWorkingHours(string workingHours)
         {
@@ -134,9 +173,24 @@ namespace ConsumerGuideApp.View.Pages
                 }
 
                 _context.SaveChanges();
+
+                // Обновить услуги компании
+                var existingCompanyServices = _context.Companies
+                                                      .Include("Services")
+                                                      .FirstOrDefault(c => c.CompanyID == _company.CompanyID);
+
+                if (existingCompanyServices != null)
+                {
+                    existingCompanyServices.Services.Clear();
+                    foreach (Services selectedService in lbServices.SelectedItems)
+                    {
+                        existingCompanyServices.Services.Add(selectedService);
+                    }
+                }
+
+                _context.SaveChanges();
+
                 MessageBox.Show("Информация сохранена.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                // Вернуться на предыдущую страницу или обновить текущую
-                NavigationService.GoBack();
             }
         }
 
@@ -162,6 +216,39 @@ namespace ConsumerGuideApp.View.Pages
         {
             // Вернуться на предыдущую страницу или закрыть текущую
             NavigationService.GoBack();
+        }
+
+        private void txtPhone_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            if (!char.IsDigit(e.Text, e.Text.Length - 1))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            TextBox textBox = sender as TextBox;
+            string text = textBox.Text + e.Text;
+
+            if (text.Length == 1)
+            {
+                textBox.Text = "+7 (";
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+            else if (text.Length == 8)
+            {
+                textBox.Text += ") ";
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+            else if (text.Length == 13 || text.Length == 16)
+            {
+                textBox.Text += "-";
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+
+            if (textBox.Text.Length >= 18)
+            {
+                e.Handled = true;
+            }
         }
     }
 }
